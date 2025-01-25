@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Spectre.Console;
 using Phonebook.yemiodetola.Models;
 
 
@@ -16,14 +15,12 @@ public class ContactsRepository
       {
         db.Contacts.Add(contact);
         await db.SaveChangesAsync();
-        AnsiConsole.WriteLine("Contact added successfully.");
       }
       catch (Exception ex)
       {
-        AnsiConsole.WriteLine($"Error: {ex.Message}");
+        throw new InvalidOperationException($"Error adding contact: {ex.Message}");
       }
     }
-    AnsiConsole.WriteLine($"{contact.Name} is added");
   }
 
   public async Task<List<Contact>> GetContacts()
@@ -71,30 +68,6 @@ public class ContactsRepository
       await db.SaveChangesAsync();
     }
   }
-  public async Task TestConnection()
-  {
-    try
-    {
-      using (var db = new PhonebookContext())
-      {
-        bool canConnect = await db.Database.CanConnectAsync();
-
-        if (canConnect)
-        {
-          AnsiConsole.MarkupLine("[green]Successfully connected to database![/]");
-        }
-        else
-        {
-          AnsiConsole.MarkupLine("[red]Cannot connected to database![/]");
-        }
-      }
-    }
-    catch (Exception ex)
-    {
-      AnsiConsole.MarkupLine($"[red]Connection failed: {ex.Message}[/]");
-    }
-  }
-
   public async Task CreateCategory(Category category)
   {
     using (var db = new PhonebookContext())
@@ -103,11 +76,10 @@ public class ContactsRepository
       {
         db.Categories.Add(category);
         await db.SaveChangesAsync();
-        AnsiConsole.WriteLine("Category added successfully.");
       }
       catch (Exception ex)
       {
-        AnsiConsole.WriteLine($"Error: {ex.Message}");
+        throw new Exception($"Error creating category: {ex.Message}");
       }
     }
   }
